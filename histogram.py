@@ -6,7 +6,7 @@ import matplotlib.dates as mdates
 from datetime import datetime
 
 def analyze_insulin(df, periods, bucket_size):
-    df.drop(columns=['event_type', 'glucose_value_(mg/dl)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True)
+    df.drop(columns=['event_type', 'glucose_value_(mg/dl)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
     df.rename(columns={"event_subtype": "type", "insulin_value_(u)": "units"}, inplace=True)
     df['count'] = 1
 
@@ -50,7 +50,7 @@ def analyze_insulin(df, periods, bucket_size):
 
 def analyze_carbs(df, periods, bucket_size):
     df.reset_index(drop=True, inplace=True)
-    df.drop(columns=['event_type', 'event_subtype', 'glucose_value_(mg/dl)', 'insulin_value_(u)', 'duration_(hh:mm:ss)'], inplace=True)
+    df.drop(columns=['event_type', 'event_subtype', 'glucose_value_(mg/dl)', 'insulin_value_(u)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
     df.rename(columns={"carb_value_(grams)": "carbs"}, inplace=True)
     df['count'] = 1
 
@@ -80,6 +80,7 @@ def main():
     # Parse a CSV file into a base dataframe
     df = pd.read_csv('data/export.csv', index_col=False)
     df.columns = [c.lower().replace(' ', '_') for c in df.columns]
+    df.drop(columns=['index', 'patient_info', 'device_info', 'source_device_id', 'glucose_rate_of_change_(mg/dl/min)', 'transmitter_time_(long_integer)', 'transmitter_id'], inplace=True, errors='ignore')
     df.rename(columns = {'timestamp_(yyyy-mm-ddthh:mm:ss)':'datetime'}, inplace = True)
     df['datetime'] = pd.to_datetime(df["datetime"])
     df.sort_values(by='datetime', inplace = True)

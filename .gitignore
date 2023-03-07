@@ -2,6 +2,7 @@
 .DS_Store
 
 data/export.csv
+out/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
