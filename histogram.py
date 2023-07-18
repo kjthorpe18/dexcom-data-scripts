@@ -78,7 +78,11 @@ def main():
         os.mkdir(outdir)
 
     # Parse a CSV file into a base dataframe
-    df = pd.read_csv('data/export.csv', index_col=False)
+    try:
+        df = pd.read_csv('data/export.csv', index_col=False)
+    except FileNotFoundError as e:
+         df = pd.read_csv('data/sample.csv', index_col=False)
+
     df.columns = [c.lower().replace(' ', '_') for c in df.columns]
     df.drop(columns=['index', 'patient_info', 'device_info', 'source_device_id', 'glucose_rate_of_change_(mg/dl/min)', 'transmitter_time_(long_integer)', 'transmitter_id'], inplace=True, errors='ignore')
     df.rename(columns = {'timestamp_(yyyy-mm-ddthh:mm:ss)':'datetime'}, inplace = True)

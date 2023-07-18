@@ -8,7 +8,7 @@ Scripts that take a CSV export of Dexcom continuous blood glucose monitor (CGM) 
 
 Dexcom allows raw patient CGM data to be exported in CSV format. Follow the [instructions given here](https://www.dexcom.com/en-us/faqs/can-i-export-raw-data) to export data.
 
-Add your CSV to the `data/` directory and rename it `export.csv`. A sample CSV is provided and can be renamed.
+Add your CSV to the `data/` directory and rename it `export.csv`. A sample CSV is provided, and will be used if no `export.csv` is provided.
 
 ### Scripts
 `histogram.py`
