@@ -1,9 +1,6 @@
 import os
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime
 
 def analyze_insulin(df, periods, bucket_size):
     df.drop(columns=['event_type', 'glucose_value_(mg/dl)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
