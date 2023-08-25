@@ -17,9 +17,14 @@ Add your CSV to the `data/` directory and rename it `export.csv`. A sample CSV i
 `mean_glucose_plot.py`
   - Generates a scatter plot of average blood glucose values for each day.
 
-#### To Run
+### To Run
 
-Add your CGM data CSV name `export.csv` to the `data/` directory. Run a script from the main directory with:
+Install dependencies:
+```sh
+pip3 install -r requirements.txt
+```
+
+Add your Dexcom CGM data CSV named `export.csv` to the `data/` directory. Run a script from the main directory with:
 
 ```sh
 python3 <script_name.py>
