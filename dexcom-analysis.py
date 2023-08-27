@@ -4,10 +4,11 @@ import pandas as pd
 # import matplotlib.pyplot as plt
 import altair as alt
 import webview
+import pyautogui
 
 # Get screen resolution
-user32 = ctypes.windll.user32
-screen_width, screen_heigth = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+# user32 = ctypes.windll.user32
+screen_width, screen_heigth = pyautogui.size()
 
 def mean_glucose_plot(df: pd.DataFrame) -> alt.Chart:
     df.drop(columns=['event_type', 'event_subtype', 'insulin_value_(u)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
