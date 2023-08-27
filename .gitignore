@@ -3,7 +3,7 @@
 
 data/export.csv
 out/*
-
+OldCode/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
