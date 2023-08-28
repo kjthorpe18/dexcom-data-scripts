@@ -1,13 +1,8 @@
-# import os
-import ctypes
 import pandas as pd
-# import matplotlib.pyplot as plt
 import altair as alt
 import webview
 import pyautogui
 
-# Get screen resolution
-# user32 = ctypes.windll.user32
 screen_width, screen_heigth = pyautogui.size()
 
 def mean_glucose_plot(df: pd.DataFrame) -> alt.Chart:
@@ -42,16 +37,6 @@ def mean_glucose_plot(df: pd.DataFrame) -> alt.Chart:
         width=screen_width-600,
         height=screen_heigth-400,
     )
-
-    # mean_glucose_plot = grouped_by_day.plot.scatter(x="datetime", y="glucose_value", grid=True)
-    # plt.title("Average Blood Glucose", fontsize = 24)
-    # mean_glucose_plot.set_xlabel("Date", fontsize=16)
-    # mean_glucose_plot.set_ylabel("Blood Glucose (mg/dL)", fontsize=16)
-    # fig = plt.gcf()
-    # fig.set_size_inches(24.5, 10.5)
-    # fig.savefig('out/mean_glucose.png', dpi=100)
-    # plt.clf()
-    
     return chart
 
 def analyze_insulin(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Chart: 
@@ -78,17 +63,6 @@ def analyze_insulin(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Cha
         height=screen_heigth-400,
     )
 
-    # long_plot = long.plot.bar(x="datetime", y="index", title="Frequency of Long Acting Insulin Dose Time", color=['red'])
-    # plt.title("Frequency of Long Acting Insulin Dose Time", fontsize = 24)
-    # long_plot.set_xlabel("Time", fontsize=16)
-    # long_plot.set_ylabel("Count", fontsize=16)
-
-    # # plt.show(block=True)
-    # fig = plt.gcf()
-    # fig.set_size_inches(18.5, 10.5)
-    # fig.savefig('out/long_acting_hist.png', dpi=100)
-    # plt.clf()
-
     # ------ FAST ACTING ------
     fast_acting = df.loc[df.type == "Fast-Acting"].copy()
     # Excludes single unit doses, which are likely correction doses
@@ -106,19 +80,8 @@ def analyze_insulin(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Cha
         width=screen_width-600,
         height=screen_heigth-400,
     )
-    
-    # fast_plot = fast.plot.bar(x="datetime", y="index", title="Frequency of Fast Acting Insulin Dose Time", color=['blue'])
-    # plt.title("Frequency of Fast Acting Insulin Dose Time", fontsize = 24)
-    # fast_plot.set_xlabel("Time", fontsize=16)
-    # fast_plot.set_ylabel("Count", fontsize=16)
-    # # plt.show(block=True)
-    # fig = plt.gcf()
-    # fig.set_size_inches(18.5, 10.5)
-    # fig.savefig('out/fast_acting_hist.png', dpi=100)
-    # plt.clf()
-    
-    charts = alt.vconcat(chart_long, chart_fast)
-    return charts
+
+    return chart_long, chart_fast
 
 def analyze_carbs(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Chart:
     df.reset_index(drop=True, inplace=True)
@@ -144,25 +107,10 @@ def analyze_carbs(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Chart
         width=screen_width-600,
         height=screen_heigth-400,
     )
-        
-    # carbs_plot = carbs.plot.bar(x="datetime", y="index", title="Frequency of Meal or Snack Time", color=['green'])
-    # plt.title("Frequency of Meal or Snack Time", fontsize = 24)
-    # carbs_plot.set_xlabel("Time", fontsize=16)
-    # carbs_plot.set_ylabel("Count", fontsize=16)
-    # # plt.show(block=True)
-    # fig = plt.gcf()
-    # fig.set_size_inches(18.5, 10.5)
-    # fig.savefig('out/meal_hist.png', dpi=100)
-    # plt.clf()
-    
+
     return chart_carbs
 
 def main():
-    # outdir = './out'
-    # if not os.path.exists(outdir):
-    #     os.mkdir(outdir)
-
-    # Parse a CSV file into a base dataframe
     try:
         df = pd.read_csv('data/export.csv', index_col=False)
     except FileNotFoundError as e:
@@ -181,15 +129,37 @@ def main():
 
     # Create plots
     glucose = mean_glucose_plot(blood_glucose_events)
-    insuline = analyze_insulin(insulin_events, 48, '30T')
+    long_acting, fast_acting = analyze_insulin(insulin_events, 48, '30T')
     carbs = analyze_carbs(carb_events, 48, '30T')
     
-    charts = alt.vconcat(glucose, insuline, carbs).to_html()
+    charts_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    </head>
+    <body>
+
+    <div id="vis1"></div>
+    <div id="vis2"></div>
+    <div id="vis3"></div>
+    <div id="vis4"></div>
+
+    <script type="text/javascript">
+    vegaEmbed('#vis1', {glucose.to_json()});
+    vegaEmbed('#vis2', {long_acting.to_json()});
+    vegaEmbed('#vis3', {fast_acting.to_json()});
+    vegaEmbed('#vis4', {carbs.to_json()});
+    </script>
+    </body>
+    </html>
+    """
     
     # Display plots
-    webview.create_window('Average Blood Glucose', html=charts, width=screen_width, height=screen_heigth-50)
+    webview.create_window('Dexcom Data Analysis', html=charts_html, width=screen_width, height=screen_heigth-50)
     webview.start()
         
-
 if __name__ == "__main__":
     main()
