@@ -14,10 +14,6 @@ def mean_glucose_plot(df: pd.DataFrame):
     df['glucose_value'] = df['glucose_value'].astype('int')
 
     grouped_by_day = df.groupby('datetime', as_index=False)['glucose_value'].mean().reset_index()
-    # grouped_by_day['datetime'] = pd.to_datetime(grouped_by_day['datetime'])
-    # grouped_by_day.glucose_value = round(grouped_by_day.glucose_value)
-    
-
 
     mean_glucose_plot = grouped_by_day.plot.scatter(x="datetime", y="glucose_value", grid=True)
     plt.title("Average Blood Glucose", fontsize = 24)
@@ -27,7 +23,7 @@ def mean_glucose_plot(df: pd.DataFrame):
     fig.set_size_inches(24.5, 10.5)
     fig.savefig('out/mean_glucose.png', dpi=100)
     plt.clf()
-    
+
 
 def main():
     outdir = './out'
@@ -51,7 +47,7 @@ def main():
 
     # Create plots
     mean_glucose_plot(blood_glucose_events)
-    
+
 
 if __name__ == "__main__":
     main()
