@@ -39,7 +39,7 @@ def mean_glucose_plot(df: pd.DataFrame) -> alt.Chart:
     )
     return chart
 
-def analyze_insulin(df: pd.DataFrame, periods: int, bucket_size: str) -> alt.Chart: 
+def analyze_insulin(df: pd.DataFrame, periods: int, bucket_size: str) -> list[alt.Chart, alt.Chart]: 
     df.drop(columns=['event_type', 'glucose_value_(mg/dl)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
     df.rename(columns={"event_subtype": "type", "insulin_value_(u)": "units"}, inplace=True)
     df['count'] = 1
