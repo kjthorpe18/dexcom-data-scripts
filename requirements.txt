@@ -2,3 +2,5 @@ pandas==2.0.3
 pywebview==4.2.2
 altair==5.0.1
 PyAutoGUI==0.9.54
+matplotlib==3.7.2
+numpy==1.25.0
