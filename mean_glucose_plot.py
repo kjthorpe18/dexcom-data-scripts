@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def mean_glucose_plot(df):
+
+def mean_glucose_plot(df: pd.DataFrame):
     df.drop(columns=['event_type', 'event_subtype', 'insulin_value_(u)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
     df.rename(columns={"glucose_value_(mg/dl)": "glucose_value"}, inplace=True)
     df.reset_index(drop=True, inplace=True)
@@ -20,11 +21,11 @@ def mean_glucose_plot(df):
     mean_glucose_plot.set_xlabel("Date", fontsize=16)
     mean_glucose_plot.set_ylabel("Blood Glucose (mg/dL)", fontsize=16)
 
-    # plt.show(block=True)
     fig = plt.gcf()
     fig.set_size_inches(24.5, 10.5)
     fig.savefig('out/mean_glucose.png', dpi=100)
     plt.clf()
+
 
 def main():
     outdir = './out'
@@ -37,6 +38,8 @@ def main():
     except FileNotFoundError as e:
          df = pd.read_csv('data/sample.csv', index_col=False)
 
+    # Drop index and other columns, rename, and format some columns to simpler names
+    df.drop(columns=df.columns[0], axis=1,  inplace=True)
     df.columns = [c.lower().replace(' ', '_') for c in df.columns]
     df.drop(columns=['index', 'patient_info', 'device_info', 'source_device_id', 'glucose_rate_of_change_(mg/dl/min)', 'transmitter_time_(long_integer)', 'transmitter_id'], inplace=True, errors='ignore')
     df.rename(columns = {'timestamp_(yyyy-mm-ddthh:mm:ss)':'datetime'}, inplace = True)
@@ -48,6 +51,7 @@ def main():
 
     # Create plots
     mean_glucose_plot(blood_glucose_events)
+
 
 if __name__ == "__main__":
     main()
