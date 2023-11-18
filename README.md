@@ -10,13 +10,6 @@ Dexcom allows raw patient CGM data to be exported in CSV format. Follow the [ins
 
 Add your CSV to the `data/` directory and rename it `export.csv`. A sample CSV is provided, and will be used if no `export.csv` is provided.
 
-### Scripts
-`histogram.py`
-  - Generates histograms displaying the frequency of fast-acting insulin, long-acting insulin, and carbohydrate times.
-
-`mean_glucose_plot.py`
-  - Generates a scatter plot of average blood glucose values for each day.
-
 ### To Run
 
 Install dependencies:
@@ -27,12 +20,33 @@ pip3 install -r requirements.txt
 Add your Dexcom CGM data CSV named `export.csv` to the `data/` directory. Run a script from the main directory with:
 
 ```sh
-python3 <script_name.py>
+python3 <script_name.py> [options]
 ```
 
+### Scripts
+
+`dexcom_analysis.py`
+- Generates histogram charts for long acting insulin, fast acting insulin, and carb times
+- Generates a scatter plot of average blood glucose values for each day
+- Displays charts in one window
+- `-f, --filename` to specify data filename
+- `-s, --save` to optionally save charts as PNG
+
+### Old scripts:
+
+`histogram.py`
+- Generates histograms displaying the frequency of fast-acting insulin, long-acting insulin, and carbohydrate times.
+
+`mean_glucose_plot.py`
+- Generates a scatter plot of average blood glucose values for each day.
+
 ### Notes
+- `dexcom_analysis.py`
+    - Saving the charts from the PyWebView on MacOS is not supported
+    - Same notes as the below two scripts
+
 - `histogram.py`
-    - This script groups data into 30 minute buckets.
+    - This script groups data into 30 minute buckets
     - This script excludes carb entries less than 5 grams. This is to exclude small "correction" food that is used to sightly blood glucose when low. The justification for this is to only track more significant meals and snacks. This is adjustable by changing this line in the script:
       ```python
       df = df.loc[df.carbs >= 5.0]

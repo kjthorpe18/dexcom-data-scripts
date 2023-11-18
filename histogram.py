@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def analyze_insulin(df, periods, bucket_size):
     df.drop(columns=['event_type', 'glucose_value_(mg/dl)', 'carb_value_(grams)', 'duration_(hh:mm:ss)'], inplace=True, errors='ignore')
     df.rename(columns={"event_subtype": "type", "insulin_value_(u)": "units"}, inplace=True)
@@ -69,6 +70,7 @@ def analyze_carbs(df, periods, bucket_size):
     fig.savefig('out/meal_hist.png', dpi=100)
     plt.clf()
 
+
 def main():
     outdir = './out'
     if not os.path.exists(outdir):
@@ -93,6 +95,7 @@ def main():
     # Create plots
     analyze_insulin(insulin_events, 48, '30T')
     analyze_carbs(carb_events, 48, '30T')
+
 
 if __name__ == "__main__":
     main()
