@@ -126,9 +126,10 @@ def main():
     args = parser.parse_args()
 
     try:
-        df = pd.read_csv('data/export.csv', index_col=False)
+        df = pd.read_csv("data/" + args.filename, index_col=False)
     except FileNotFoundError as e:
-         df = pd.read_csv('data/sample.csv', index_col=False)
+        print("Error: file %s not found. Exiting..." % (args.filename))
+        sys.exit(1)
 
     df.columns = [c.lower().replace(' ', '_') for c in df.columns]
     df.drop(columns=['index', 'patient_info', 'device_info', 'source_device_id', 'glucose_rate_of_change_(mg/dl/min)', 'transmitter_time_(long_integer)', 'transmitter_id'], inplace=True, errors='ignore')
